@@ -4,14 +4,12 @@
  * and open the template in the editor.
  */
 package dcoms;
-
+import java.rmi.*;
 /**
  *
- * @author User
+ * @author yipzh
  */
-public class test2 {
-    public static void main (String args[]){
-        System.out.println("Hi testing push from Jet branch");
-    }
+public interface rmiinterface extends Remote{
+    public int add(int x, int y)throws RemoteException;
+    public double areaOfCircle(double r)throws RemoteException;
 }
-
