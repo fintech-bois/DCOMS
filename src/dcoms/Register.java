@@ -15,7 +15,6 @@ public class Register {
     public static void main(String args[])throws RemoteException
     {
         Registry reg = LocateRegistry.createRegistry(1099);
-        reg.rebind("add", new Server());  //notboundexception
-        reg.rebind("areaOfCircle", new Server());
+        reg.rebind("Users", new Users());
     }
 }
