@@ -221,6 +221,19 @@ public class Login extends javax.swing.JFrame {
                     out.writeObject(obj2);
                     out.flush();
                     out.close();
+                } else {
+                    String filename = "Remember Me.ser"; // Change this to your file name
+                    File file = new File(filename);
+
+                    if (file.exists()) {  // Check if file exists
+                        if (file.delete()) {  // Delete the file
+                            System.out.println(filename + " deleted successfully.");
+                        } else {
+                            System.out.println("Failed to delete " + filename);
+                        }
+                    } else {
+                        System.out.println(filename + " does not exist.");
+                    }
                 }
                 JOptionPane.showMessageDialog(null, "Login successful.", "Success", JOptionPane.INFORMATION_MESSAGE);
                 if (userType.equals("admin")) {
