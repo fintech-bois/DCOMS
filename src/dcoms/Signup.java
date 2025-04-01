@@ -12,6 +12,7 @@ import java.rmi.RemoteException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
+import java.util.regex.*;
 
 /**
  *
@@ -42,8 +43,28 @@ public class Signup extends javax.swing.JFrame {
         txtLname = new javax.swing.JTextField();
         btnSignup = new javax.swing.JButton();
         txtIC = new javax.swing.JFormattedTextField();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        jLabel5 = new javax.swing.JLabel();
+        jLabel6 = new javax.swing.JLabel();
+        jLabel7 = new javax.swing.JLabel();
+        UsernameError = new javax.swing.JLabel();
+        PasswordError = new javax.swing.JLabel();
+        ConfirmPasswordError = new javax.swing.JLabel();
+        FnameError = new javax.swing.JLabel();
+        LnameError = new javax.swing.JLabel();
+        ICError = new javax.swing.JLabel();
+        jLabel9 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        txtPassword.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtPasswordActionPerformed(evt);
+            }
+        });
 
         btnSignup.setText("Sign up");
         btnSignup.addActionListener(new java.awt.event.ActionListener() {
@@ -58,72 +79,210 @@ public class Signup extends javax.swing.JFrame {
             ex.printStackTrace();
         }
 
+        jLabel1.setText("Username:");
+
+        jLabel2.setText("Password:");
+
+        jLabel3.setText("Confirm Password:");
+
+        jLabel5.setText("First name:");
+
+        jLabel6.setText("Last name:");
+
+        jLabel7.setText("IC:");
+
+        UsernameError.setForeground(new java.awt.Color(255, 0, 0));
+
+        PasswordError.setForeground(new java.awt.Color(255, 0, 0));
+
+        ConfirmPasswordError.setForeground(new java.awt.Color(255, 0, 0));
+
+        FnameError.setForeground(new java.awt.Color(255, 0, 0));
+
+        LnameError.setForeground(new java.awt.Color(255, 0, 0));
+
+        ICError.setForeground(new java.awt.Color(255, 0, 0));
+        ICError.setToolTipText("");
+
+        jLabel9.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        jLabel9.setText("Sign up");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(169, 169, 169)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(btnSignup)
-                    .addComponent(txtIC, javax.swing.GroupLayout.DEFAULT_SIZE, 120, Short.MAX_VALUE)
-                    .addComponent(txtUsername)
-                    .addComponent(txtPassword)
-                    .addComponent(txtConfirmPassword)
-                    .addComponent(txtFname)
-                    .addComponent(txtLname))
-                .addContainerGap(111, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(70, 70, 70)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel1)
+                            .addComponent(jLabel2)
+                            .addComponent(jLabel3)
+                            .addComponent(jLabel4)
+                            .addComponent(jLabel5)
+                            .addComponent(jLabel6)
+                            .addComponent(jLabel7))
+                        .addGap(29, 29, 29)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(txtPassword, javax.swing.GroupLayout.DEFAULT_SIZE, 120, Short.MAX_VALUE)
+                            .addComponent(txtUsername, javax.swing.GroupLayout.DEFAULT_SIZE, 120, Short.MAX_VALUE)
+                            .addComponent(txtConfirmPassword, javax.swing.GroupLayout.DEFAULT_SIZE, 120, Short.MAX_VALUE)
+                            .addComponent(txtFname, javax.swing.GroupLayout.DEFAULT_SIZE, 120, Short.MAX_VALUE)
+                            .addComponent(txtLname, javax.swing.GroupLayout.DEFAULT_SIZE, 120, Short.MAX_VALUE)
+                            .addComponent(txtIC, javax.swing.GroupLayout.DEFAULT_SIZE, 120, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(PasswordError)
+                            .addComponent(UsernameError)
+                            .addComponent(ConfirmPasswordError)
+                            .addComponent(FnameError)
+                            .addComponent(LnameError)
+                            .addComponent(ICError)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(131, 131, 131)
+                        .addComponent(btnSignup, javax.swing.GroupLayout.PREFERRED_SIZE, 237, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(207, 207, 207)
+                        .addComponent(jLabel9)))
+                .addContainerGap(151, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(19, 19, 19)
-                .addComponent(txtUsername, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(txtPassword, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(20, 20, 20)
+                .addComponent(jLabel9)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 33, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtUsername, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel1)
+                    .addComponent(UsernameError))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(txtConfirmPassword, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(txtFname, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(txtLname, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtPassword, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel2)
+                    .addComponent(PasswordError))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtConfirmPassword, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel3)
+                    .addComponent(ConfirmPasswordError))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtFname, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel4)
+                    .addComponent(jLabel5)
+                    .addComponent(FnameError))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtLname, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel6)
+                    .addComponent(LnameError))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtIC, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel7)
+                    .addComponent(ICError))
                 .addGap(18, 18, 18)
-                .addComponent(txtIC, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 34, Short.MAX_VALUE)
                 .addComponent(btnSignup)
-                .addGap(57, 57, 57))
+                .addGap(40, 40, 40))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnSignupActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSignupActionPerformed
-        try {
-            String username, password, confirmPassword, fname, lname, ic;
-            username = txtUsername.getText();
-            password = String.valueOf(txtPassword.getPassword());
-            confirmPassword = String.valueOf(txtConfirmPassword.getPassword());
-            fname = txtFname.getText();
-            lname = txtLname.getText();
-            ic = txtIC.getText();
+    try {
+        String username, password, confirmPassword, fname, lname, ic;
+        username = txtUsername.getText();
+        password = String.valueOf(txtPassword.getPassword());
+        confirmPassword = String.valueOf(txtConfirmPassword.getPassword());
+        fname = txtFname.getText();
+        lname = txtLname.getText();
+        ic = txtIC.getText();
+
+        // Clear previous error messages
+        UsernameError.setVisible(false);
+        PasswordError.setVisible(false);
+        ConfirmPasswordError.setVisible(false);
+        FnameError.setVisible(false);
+        LnameError.setVisible(false);
+        ICError.setVisible(false);
+
+        boolean isValid = true;
+
+        // Perform validation checks
+        if (username.isEmpty()) {
+            UsernameError.setText("Username is required!");
+            UsernameError.setVisible(true);
+            isValid = false;
+        }
+        if (password.isEmpty()) {
+            PasswordError.setText("Password cannot be empty!");
+            PasswordError.setVisible(true);
+            isValid = false;
+        } else if (password.length() < 8) {
+            PasswordError.setText("At least 8 characters!");
+            PasswordError.setVisible(true);
+            isValid = false;
+        } else {
+            PasswordError.setVisible(false); 
+        }
+        if (!password.equals(confirmPassword)) {
+            ConfirmPasswordError.setText("Passwords do not match!");
+            ConfirmPasswordError.setVisible(true);
+            isValid = false;
+        }
+        if (fname.isEmpty()) {
+            FnameError.setText("First name is required!");
+            FnameError.setVisible(true);
+            isValid = false;
+        }
+        if (lname.isEmpty()) {
+            LnameError.setText("Last name is required!");
+            LnameError.setVisible(true);
+            isValid = false;
+        }
+        if (ic.isEmpty()) {
+            ICError.setText("IC cannot be empty!");
+            ICError.setVisible(true);
+            isValid = false;
+        } else {
+        // Check if the IC matches the pattern: xxxxxx-xx-xxxx
+        String regex = "\\d{6}-\\d{2}-\\d{4}"; // The pattern for the IC format
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(ic);
+
+        if (!matcher.matches()) {
+            ICError.setText("Invalid IC format!");
+            ICError.setVisible(true);
+            isValid = false;
+        } else {
+        ICError.setVisible(false); // Hide the error if the format is correct
+        }
+    }
+        if (isValid) {
+            // Proceed with signup if valid
             rmiinterface obj1 = (rmiinterface)Naming.lookup("rmi://localhost:1099/Users");
             String status = obj1.signup(username, password, fname, lname, ic);
-            if (status.equals("Successful")){
-                JOptionPane.showMessageDialog(null,"Sign up successful.","Success",JOptionPane.INFORMATION_MESSAGE);
+            if (status.equals("Successful")) {
+                JOptionPane.showMessageDialog(null, "Sign up successful.", "Success", JOptionPane.INFORMATION_MESSAGE);
                 Login a = new Login();
                 a.setVisible(true);
                 this.setVisible(false);
             } else {
-                JOptionPane.showMessageDialog(null, "Sign up unsuccessful.","Error",JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null, "Sign up unsuccessful.", "Error", JOptionPane.ERROR_MESSAGE);
             }
-        } catch (NotBoundException ex) {
-            Logger.getLogger(Signup.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (MalformedURLException ex) {
-            Logger.getLogger(Signup.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (RemoteException ex) {
-            Logger.getLogger(Signup.class.getName()).log(Level.SEVERE, null, ex);
         }
+    } catch (NotBoundException | MalformedURLException | RemoteException ex) {
+        Logger.getLogger(Signup.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
     }//GEN-LAST:event_btnSignupActionPerformed
+
+    private void txtPasswordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtPasswordActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtPasswordActionPerformed
 
     /**
      * @param args the command line arguments
@@ -161,7 +320,21 @@ public class Signup extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel ConfirmPasswordError;
+    private javax.swing.JLabel FnameError;
+    private javax.swing.JLabel ICError;
+    private javax.swing.JLabel LnameError;
+    private javax.swing.JLabel PasswordError;
+    private javax.swing.JLabel UsernameError;
     private javax.swing.JButton btnSignup;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel9;
     private javax.swing.JPasswordField txtConfirmPassword;
     private javax.swing.JTextField txtFname;
     private javax.swing.JFormattedTextField txtIC;
