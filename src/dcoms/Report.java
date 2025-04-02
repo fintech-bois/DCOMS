@@ -9,7 +9,6 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -29,55 +28,38 @@ public class Report extends UnicastRemoteObject implements ReportService {
         super();
     }
     
-    public void getItemDetails()throws RemoteException{
-        String query = "SELECT * FROM Items";
+    @Override
+    public void fetchSalesDetails() throws RemoteException {
+    String query = "SELECT i.itemID, i.itemName, i.price, " +
+                   "COALESCE(SUM(oi.quantity), 0) AS totalQuantity, " +
+                   "COALESCE(SUM(oi.quantity * i.price), 0) AS totalAmount " +
+                   "FROM Items i " +
+                   "LEFT JOIN Order_Items oi ON i.itemID = oi.itemID " +
+                   "GROUP BY i.itemID, i.itemName, i.price";
 
-        try (Connection conn = DriverManager.getConnection(url, dbUser, dbPass);
-            Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery(query)) {
-            
-            while (rs.next()) {
-                int itemID = rs.getInt("itemID");
-                String itemName = rs.getString("itemName");
-                double price = rs.getDouble("price");
-                salesList.add(new Sale(itemID, itemName, price));
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
+    salesList.clear();  // Clear previous data before adding new ones
+
+    try (Connection conn = DriverManager.getConnection(url, dbUser, dbPass);
+         Statement stmt = conn.createStatement();
+         ResultSet rs = stmt.executeQuery(query)) {
+
+        while (rs.next()) {
+            int itemID = rs.getInt("itemID");
+            String itemName = rs.getString("itemName");
+            double price = rs.getDouble("price");
+            int quantity = rs.getInt("totalQuantity");
+            double totalAmount = rs.getDouble("totalAmount");
+
+            salesList.add(new Sale(itemID, itemName, price, quantity, totalAmount));
         }
+    } catch (SQLException e) {
+        e.printStackTrace();
     }
-    
-    public void getOrderItemDetails()throws RemoteException{
-        salesList.forEach((sale) -> {
-            int itemID = sale.itemID;
-            String query = "SELECT * FROM Order_Items WHERE itemID = ?";
-            try (Connection conn = DriverManager.getConnection(url, dbUser, dbPass);
-                    PreparedStatement pst = conn.prepareStatement(query)) {
-                
-                pst.setInt(1, itemID);
-                ResultSet rs = pst.executeQuery();
-                int quantity = 0;
-                while (rs.next()) {
-                    quantity = quantity + rs.getInt("quantity");
-                }
-                sale.quantity = quantity;
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        });
-    }
-    
-    public void calculateTotalAmount()throws RemoteException{
-        salesList.forEach((sale) -> {
-            sale.totalAmount = sale.price * sale.quantity;
-        });
-    }
-    
+}
+
+    @Override
     public List<Sale> getReportDetails()throws RemoteException{
-        salesList.clear();
-        getItemDetails();
-        getOrderItemDetails();
-        calculateTotalAmount();
+        fetchSalesDetails();
         return salesList;
     }
 }
