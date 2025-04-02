@@ -9,7 +9,7 @@ import java.rmi.*;
  *
  * @author yipzh
  */
-public interface rmiinterface extends Remote{
+public interface UserService extends Remote{
     public String authenticateUser(String username, String password)throws RemoteException;
     public String signup(String username, String password, String fname, String lname, String ic)throws RemoteException;
 }

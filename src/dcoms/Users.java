@@ -11,13 +11,13 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 
 /**
  *
  * @author yipzh
  */
-public class Users extends UnicastRemoteObject implements rmiinterface {
+public class Users extends UnicastRemoteObject implements UserService {
+    String url = "jdbc:derby://localhost:1527/FBOSdb", dbUser = "test", dbPass = "test";
     
     public Users()throws RemoteException
     {
@@ -26,10 +26,6 @@ public class Users extends UnicastRemoteObject implements rmiinterface {
     
     public String authenticateUser(String username, String password)throws RemoteException {
         String userType = null;
-        String url = "jdbc:derby://localhost:1527/FBOSdb"; // Database URL
-        String dbUser = "test";  // Database username
-        String dbPass = "test";  // Database password
-
         String query = "SELECT userType FROM Users WHERE username = ? AND password = ?";
 
         try (Connection conn = DriverManager.getConnection(url, dbUser, dbPass);
@@ -51,10 +47,6 @@ public class Users extends UnicastRemoteObject implements rmiinterface {
     }
     
     public String signup(String username, String password, String fname, String lname, String ic)throws RemoteException{
-        String url = "jdbc:derby://localhost:1527/FBOSdb"; // Database URL
-        String dbUser = "test";  // Database username
-        String dbPass = "test";  // Database password
-
         String query = "INSERT INTO Users (username, password, fname, lname, ic) VALUES (?, ?, ?, ?, ?)";
 
         try (Connection conn = DriverManager.getConnection(url, dbUser, dbPass)) {
