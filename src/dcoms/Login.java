@@ -209,7 +209,7 @@ public class Login extends javax.swing.JFrame {
 
         try {
             // Call the RMI service to authenticate the user
-            rmiinterface obj1 = (rmiinterface) Naming.lookup("rmi://localhost:1099/Users");
+            UserService obj1 = (UserService) Naming.lookup("rmi://localhost:1099/Users");
             String userType = obj1.authenticateUser(username, password);
             
             if (userType != null) {

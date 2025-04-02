@@ -263,7 +263,7 @@ public class Signup extends javax.swing.JFrame {
     }
         if (isValid) {
             // Proceed with signup if valid
-            rmiinterface obj1 = (rmiinterface)Naming.lookup("rmi://localhost:1099/Users");
+            UserService obj1 = (UserService)Naming.lookup("rmi://localhost:1099/Users");
             String status = obj1.signup(username, password, fname, lname, ic);
             if (status.equals("Successful")) {
                 JOptionPane.showMessageDialog(null, "Sign up successful.", "Success", JOptionPane.INFORMATION_MESSAGE);

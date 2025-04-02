@@ -16,5 +16,6 @@ public class Register {
     {
         Registry reg = LocateRegistry.createRegistry(1099);
         reg.rebind("Users", new Users());
+        reg.rebind("Report", new Report());
     }
 }
