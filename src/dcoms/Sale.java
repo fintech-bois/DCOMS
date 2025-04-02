@@ -18,9 +18,11 @@ public class Sale implements Serializable {
     int quantity;
     double totalAmount;
 
-    public Sale(int itemID, String itemName, double price) {
+    public Sale(int itemID, String itemName, double price, int quantity, double totalAmount) {
         this.itemID = itemID;
         this.itemName = itemName;
         this.price = price;
+        this.quantity = quantity;
+        this.totalAmount = totalAmount;
     }
 }

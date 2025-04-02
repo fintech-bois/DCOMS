@@ -12,8 +12,6 @@ import java.util.List;
  * @author yipzh
  */
 public interface ReportService extends Remote {
-    public void getItemDetails()throws RemoteException;
-    public void getOrderItemDetails()throws RemoteException;
-    public void calculateTotalAmount()throws RemoteException;
+    public void fetchSalesDetails()throws RemoteException;
     public List<Sale> getReportDetails()throws RemoteException;
 }
