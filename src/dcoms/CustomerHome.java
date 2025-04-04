@@ -37,17 +37,17 @@ public class CustomerHome extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(187, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(165, 165, 165)
                 .addComponent(jLabel1)
-                .addGap(167, 167, 167))
+                .addContainerGap(189, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(81, 81, 81)
+                .addContainerGap()
                 .addComponent(jLabel1)
-                .addContainerGap(205, Short.MAX_VALUE))
+                .addContainerGap(275, Short.MAX_VALUE))
         );
 
         pack();
@@ -83,7 +83,8 @@ public class CustomerHome extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new CustomerHome().setVisible(true);
+                CustomerOrderUI.showOrderPage();
+
             }
         });
     }
