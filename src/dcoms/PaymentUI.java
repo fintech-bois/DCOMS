@@ -1,53 +1,39 @@
 package dcoms;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 public class PaymentUI {
-    // This would normally be passed from the order page
-    private static ArrayList<OrderItem> orderItems = new ArrayList<>();
+    private JFrame frame;
+    private JLabel totalLabel;
+    private JTable orderTable;
+    private DefaultTableModel tableModel;
+    private PaymentOperations operations;
     
-    // Sample class to represent order items
-    public static class OrderItem {
-        String name;
-        double price;
-        int quantity;
-        
-        public OrderItem(String name, double price, int quantity) {
-            this.name = name;
-            this.price = price;
-            this.quantity = quantity;
-        }
-        
-        public double getSubtotal() {
-            return price * quantity;
-        }
+    public PaymentUI() {
+        operations = new PaymentOperations();
     }
     
-    // For demonstration, populate with sample items
-    static {
-        orderItems.add(new OrderItem("Burger", 5.99, 2));
-        orderItems.add(new OrderItem("Pizza", 8.49, 1));
-        orderItems.add(new OrderItem("Soda", 1.99, 3));
+    public PaymentUI(PaymentOperations operations) {
+        this.operations = operations;
     }
 
-    public static void showPaymentPage() {
-        SwingUtilities.invokeLater(PaymentUI::createAndShowGUI);
+    public void showPaymentPage() {
+        SwingUtilities.invokeLater(this::createAndShowGUI);
     }
 
-    private static void createAndShowGUI() {
-        JFrame frame = new JFrame("Payment");
+    private void createAndShowGUI() {
+        frame = new JFrame("Payment");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLayout(new BorderLayout(10, 10));
-        frame.setSize(700, 580);
+        frame.setSize(800, 600);
+        
 
         // --- Header Panel ---
-        JPanel headerPanel = createHeaderPanel(frame);
+        JPanel headerPanel = createHeaderPanel();
         
         // --- Content Panel 
         JPanel contentPanel = new JPanel(new BorderLayout(15, 15));
@@ -71,7 +57,7 @@ public class PaymentUI {
         frame.setVisible(true);
     }
     
-    private static JPanel createHeaderPanel(JFrame frame) {
+    private JPanel createHeaderPanel() {
         JPanel headerPanel = new JPanel();
         headerPanel.setLayout(new BorderLayout(10, 0));
         headerPanel.setBorder(BorderFactory.createEmptyBorder(10, 15, 10, 15));
@@ -93,36 +79,47 @@ public class PaymentUI {
         return headerPanel;
     }
     
-    private static JPanel createOrderSummaryPanel() {
+    private JPanel createOrderSummaryPanel() {
         JPanel orderSummaryPanel = new JPanel(new BorderLayout(0, 10));
         orderSummaryPanel.setBorder(BorderFactory.createTitledBorder("Order Summary"));
         
-        // Create table model for order items
-        String[] columnNames = {"Item", "Price", "Quantity", "Subtotal"};
-        Object[][] data = new Object[orderItems.size()][4];
-        
-        double total = 0.0;
-        for (int i = 0; i < orderItems.size(); i++) {
-            OrderItem item = orderItems.get(i);
-            data[i][0] = item.name;
-            data[i][1] = String.format("$%.2f", item.price);
-            data[i][2] = item.quantity;
-            data[i][3] = String.format("$%.2f", item.getSubtotal());
-            total += item.getSubtotal();
+        String[] columnNames = {"Item", "Price", "Quantity", "Subtotal", "Action"};
+        tableModel = new DefaultTableModel() {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return column == 4;
+            }
+        };
+
+        for (String columnName : columnNames) {
+            tableModel.addColumn(columnName);
         }
+        updateTableData();
         
-        JTable orderTable = new JTable(data, columnNames);
-        orderTable.setEnabled(false);
+        // Create table with the model
+        orderTable = new JTable(tableModel);
         orderTable.getTableHeader().setReorderingAllowed(false);
+        
+        // render: how to display each cell and handle when clicked
+        orderTable.getColumn("Action").setCellRenderer(new ButtonRenderer("Remove Item"));
+        orderTable.getColumn("Action").setCellEditor(new ButtonEditor(new JCheckBox(), "Remove Item "));
         
         JScrollPane scrollPane = new JScrollPane(orderTable);
         scrollPane.setPreferredSize(new Dimension(500, 150));
         
         // Total panel
         JPanel totalPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        JLabel totalLabel = new JLabel("Total: $" + String.format("%.2f", total), SwingConstants.RIGHT);
+        totalLabel = new JLabel("Total: $" + String.format("%.2f", operations.getTotalAmount()), SwingConstants.RIGHT);
         totalLabel.setFont(new Font("Arial", Font.BOLD, 16));
         totalPanel.add(totalLabel);
+        
+        // Add an empty cart message if needed
+        if (operations.isCartEmpty()) {
+            JLabel emptyCartLabel = new JLabel("Your cart is empty. Please add items from the menu.", SwingConstants.CENTER);
+            emptyCartLabel.setFont(new Font("Arial", Font.ITALIC, 14));
+            emptyCartLabel.setForeground(Color.GRAY);
+            orderSummaryPanel.add(emptyCartLabel, BorderLayout.NORTH);
+        }
         
         orderSummaryPanel.add(scrollPane, BorderLayout.CENTER);
         orderSummaryPanel.add(totalPanel, BorderLayout.SOUTH);
@@ -130,7 +127,37 @@ public class PaymentUI {
         return orderSummaryPanel;
     }
     
-    private static JPanel createPaymentDetailsPanel() {
+    // Update the table data and recalculate the total
+    private void updateTableData() {
+        // Clear existing rows
+        tableModel.setRowCount(0);
+        
+        // Add items to table
+        for (int i = 0; i < operations.getOrderItems().size(); i++) {
+            PaymentOperations.OrderItem item = operations.getOrderItems().get(i);
+            double subtotal = item.getSubtotal();
+            
+            tableModel.addRow(new Object[]{
+                item.name,
+                String.format("$%.2f", item.price),
+                item.quantity,
+                String.format("$%.2f", subtotal),
+                "Remove item"
+            });
+        }
+        
+        // Update the total label if it exists
+        if (totalLabel != null) {
+            totalLabel.setText("Total: $" + String.format("%.2f", operations.getTotalAmount()));
+        }
+        
+        // Check if cart is empty and display message
+        if (operations.getOrderItems().isEmpty()) {
+            System.out.println("The cart is empty");
+        }
+    }
+    
+    private JPanel createPaymentDetailsPanel() {
         JPanel paymentDetailsPanel = new JPanel();
         paymentDetailsPanel.setLayout(new BoxLayout(paymentDetailsPanel, BoxLayout.Y_AXIS));
         paymentDetailsPanel.setBorder(BorderFactory.createTitledBorder("Payment Details"));
@@ -142,16 +169,7 @@ public class PaymentUI {
         JComboBox<String> paymentMethodComboBox = new JComboBox<>(paymentMethods);
         paymentMethodPanel.add(paymentMethodLabel);
         paymentMethodPanel.add(paymentMethodComboBox);
-        
-
-        
-        // Payment method change listener
-        paymentMethodComboBox.addActionListener(e -> {
-            String selectedMethod = (String) paymentMethodComboBox.getSelectedItem();
-            paymentDetailsPanel.revalidate();
-            paymentDetailsPanel.repaint();
-        });
-        
+              
         // Complete order button
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         JButton completeOrderButton = new JButton("Complete Order");
@@ -161,26 +179,112 @@ public class PaymentUI {
         completeOrderButton.setFont(new Font("Arial", Font.BOLD, 14));
         
         completeOrderButton.addActionListener(e -> {
-            JOptionPane.showMessageDialog(
-                null,
-                "Thank you for your order! Payment successful.",
-                "Order Completed",
-                JOptionPane.INFORMATION_MESSAGE
-            );
-            System.out.println("Order completed with payment method: " + paymentMethodComboBox.getSelectedItem());
-            // Here you would normally process the payment and navigate to a confirmation page
+            if (operations.isCartEmpty()) {
+                JOptionPane.showMessageDialog(
+                    null,
+                    "Your cart is empty. Please add items before completing your order.",
+                    "Empty Cart",
+                    JOptionPane.WARNING_MESSAGE
+                );
+                return;
+            }
+            
+            double orderTotal = operations.getTotalAmount();
+            String selectedPaymentMethod = (String) paymentMethodComboBox.getSelectedItem();
+            boolean orderCompleted = operations.completeOrder(selectedPaymentMethod);
+            
+            if (orderCompleted) {
+                JOptionPane.showMessageDialog(
+                    null,
+                    "Thank you for your order! Payment successful.\nTotal Amount: $" + 
+                    String.format("%.2f", orderTotal),
+                    "Order Completed",
+                    JOptionPane.INFORMATION_MESSAGE
+                );
+
+                frame.dispose();
+                CustomerOrderUI.showOrderPage();
+            } else {
+                JOptionPane.showMessageDialog(
+                    null,
+                    "There was a problem processing your payment. Please try again.",
+                    "Payment Failed",
+                    JOptionPane.ERROR_MESSAGE
+                );
+            }
         });
         
         buttonPanel.add(completeOrderButton);
-    
         paymentDetailsPanel.add(paymentMethodPanel);
         paymentDetailsPanel.add(Box.createRigidArea(new Dimension(0, 20)));
         paymentDetailsPanel.add(buttonPanel);
         
         return paymentDetailsPanel;
     }
+    
+    // Custom button renderer for the table
+    class ButtonRenderer extends JButton implements javax.swing.table.TableCellRenderer {
+        public ButtonRenderer(String text) {
+            setOpaque(true);
+            setForeground(Color.RED);
+            setText(text);
+        }
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+            setText((value == null) ? "" : value.toString());
+            return this;
+        }
+    }
+
+    class ButtonEditor extends DefaultCellEditor {
+        private JButton button;
+        private String label;
+        private boolean isPushed;
+        private int rowToModify;  
+
+        public ButtonEditor(JCheckBox checkBox, String text) {
+            super(checkBox);
+            button = new JButton(text);
+            button.setOpaque(true);
+            button.setForeground(Color.RED);             
+            // Use SwingUtilities.invokeLater to handle the action after the cell editing is complete
+            button.addActionListener(e -> {
+                isPushed = true;
+                fireEditingStopped();
+            });
+        }
+        @Override
+        public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
+            label = (value == null) ? "" : value.toString();
+            button.setText(label);
+            rowToModify = row;  
+            return button;
+        }
+
+        @Override
+        public Object getCellEditorValue() {
+            if (isPushed) {
+                SwingUtilities.invokeLater(() -> {
+                    try {
+                        operations.decrementItemQuantity(rowToModify);
+                        updateTableData();
+                    } catch (Exception ex) {
+                        System.out.println("Error when modifying item: " + ex.getMessage());
+                    }
+                });
+            }
+            isPushed = false;
+            return label;
+        }
+
+        @Override
+        public boolean stopCellEditing() {
+            isPushed = false;
+            return super.stopCellEditing();
+        }
+    }
 
     public static void main(String[] args) {
-        showPaymentPage();
+        new PaymentUI().showPaymentPage();
     }
 }
