@@ -4,8 +4,11 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 public class CustomerOrderUI {
+    // added a static payment ops, Shared cart to store items between screens
+    private static PaymentOperations paymentOps = new PaymentOperations();
 
     public static void showOrderPage() {
         SwingUtilities.invokeLater(CustomerOrderUI::createAndShowGUI);
@@ -26,16 +29,18 @@ public class CustomerOrderUI {
         JLabel menu = new JLabel("Menu"); 
         JButton paymentButton = new JButton("Proceed to Payment >>");
 
-        // Action Listeners (implement actual logic later)
+
         backButton.addActionListener(e -> {
             System.out.println("Back to Main Page button clicked!");
-            // MainPageUI.showMainPage(); // Example call
+            // CustomerHome home = new CustomerHome();
+            // frame.dispose();
+            // home.setVisible(true);
         });
 
-        paymentButton.addActionListener(e -> {
-            System.out.println("Proceed to Payment button clicked!");    
+        paymentButton.addActionListener(e -> {   
             frame.dispose();
-            PaymentUI.showPaymentPage();
+            PaymentUI paymentUI = new PaymentUI(paymentOps); // Pass the cart data
+            paymentUI.showPaymentPage();
         });
 
         // Panel to center the Menu button
@@ -56,6 +61,7 @@ public class CustomerOrderUI {
         double[] prices = {5.99, 8.49, 1.99, 2.99};
 
         for (int i = 0; i < itemNames.length; i++) {
+            final int index = i; // Need final variable 
             JPanel itemPanel = new JPanel();
             itemPanel.setLayout(new BorderLayout(5, 5));
             itemPanel.setBorder(BorderFactory.createEtchedBorder());
@@ -86,12 +92,24 @@ public class CustomerOrderUI {
              addToCart.addActionListener(e -> {
                  int quantity = (Integer) quantitySpinner.getValue();
                  if (quantity > 0) {
-                     String itemName = nameLabel.getText().split(" - ")[0];
+                     String itemName = itemNames[index]; // Use the actual item name from the array
+                     double price = prices[index]; // Get the price from the array
+                     
+                     // Add the item to the shared cart
+                     paymentOps.addItem(itemName, price, quantity);
+                     
                      System.out.println("Adding " + quantity + " of " + itemName + " to cart.");
-                     // Add actual cart logic here
+                     JOptionPane.showMessageDialog(frame, 
+                                                  quantity + " " + itemName + "(s) added to cart.",
+                                                  "Added to Cart", 
+                                                  JOptionPane.INFORMATION_MESSAGE);
+                     
+                     // Reset the spinner
+                     quantitySpinner.setValue(0);
                  } else {
                      System.out.println("Select a quantity greater than 0.");
-                     // JOptionPane.showMessageDialog(frame, "Please select a quantity greater than 0.", "Info", JOptionPane.INFORMATION_MESSAGE);
+                     JOptionPane.showMessageDialog(frame, "Please select a quantity greater than 0.", 
+                                                  "Info", JOptionPane.INFORMATION_MESSAGE);
                  }
              });
 
@@ -108,12 +126,17 @@ public class CustomerOrderUI {
             itemGridPanel.add(itemPanel);
         }
 
-        // --- Add Header and Item Grid to the Main Frame 
+        //  Add Header and Item Grid to the Main Frame 
         frame.add(headerPanel, BorderLayout.NORTH);
         frame.add(itemGridPanel, BorderLayout.CENTER);
 
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
+    }
+
+    // Getter for the payment operations
+    public static PaymentOperations getPaymentOperations() {
+        return paymentOps;
     }
 
     public static void main(String[] args) {
