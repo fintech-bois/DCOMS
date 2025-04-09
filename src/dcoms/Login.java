@@ -204,7 +204,7 @@ public class Login extends javax.swing.JFrame {
         }
 
         if (!isValid) {
-            return; // Stop the login process if validation fails
+            return; 
         }
 
         try {
