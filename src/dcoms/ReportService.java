@@ -5,6 +5,7 @@
  */
 package dcoms;
 import java.rmi.*;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -14,4 +15,7 @@ import java.util.List;
 public interface ReportService extends Remote {
     public void fetchSalesDetails()throws RemoteException;
     public List<Sale> getReportDetails()throws RemoteException;
+    public void setFilterDate(Date fromDate, Date toDate) throws RemoteException;
+    public void unfilteredQuery() throws RemoteException;
+    public void filteredQuery() throws RemoteException;
 }

@@ -245,22 +245,22 @@ public class CustomerOrderUI extends JFrame {
     }
     
     private ImageIcon loadImageFromResource(String imageName) {
-        String[] possiblePaths = {
-            "/images/" + imageName,
-            imageName
-        };
-        
-        // First try to load using resource
-        for (String path : possiblePaths) {
-            URL imageUrl = getClass().getResource(path);
-            if (imageUrl != null) {
-                return new ImageIcon(imageUrl);
-            }
-        }
+//        String[] possiblePaths = {
+//            "/images/" + imageName,
+//            imageName
+//        };
+//        
+//        // First try to load using resource
+//        for (String path : possiblePaths) {
+//            URL imageUrl = getClass().getResource(path);
+//            if (imageUrl != null) {
+//                return new ImageIcon(imageUrl);
+//            }
+//        }
               
         // try loading from the project's root directory
         String projectRoot = System.getProperty("user.dir");
-        File file = new File(projectRoot + "/images/" + imageName);
+        File file = new File(projectRoot + "/src/images/" + imageName);
         if (file.exists() && file.isFile()) {
             return new ImageIcon(file.getAbsolutePath());
         }
