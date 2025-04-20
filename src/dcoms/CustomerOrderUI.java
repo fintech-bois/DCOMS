@@ -13,6 +13,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class CustomerOrderUI extends JFrame {
     private ItemService itemService;
@@ -410,15 +412,21 @@ public class CustomerOrderUI extends JFrame {
             return;
         }
         
-         int result = JOptionPane.showConfirmDialog(this, 
-         "Order placed successfully!\nTotal: $" + String.format("%.2f", totalAmount) + "\n\nView Receipt?", 
-         "Order Confirmation", 
-         JOptionPane.YES_NO_OPTION);
+        try {
+            itemService.insertOrders(orderItems, totalAmount);
+        } catch (RemoteException ex) {
+            Logger.getLogger(CustomerOrderUI.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        int result = JOptionPane.showConfirmDialog(this, 
+        "Order placed successfully!\nTotal: $" + String.format("%.2f", totalAmount) + "\n\nView Receipt?", 
+        "Order Confirmation", 
+        JOptionPane.YES_NO_OPTION);
 
         if (result == JOptionPane.YES_OPTION) {
-         // Open receipt window
-        new ReceiptUI(orderItems, totalAmount, itemService).setVisible(true);
-    }
+            // Open receipt window
+            new ReceiptUI(orderItems, totalAmount, itemService).setVisible(true);
+        }
         orderItems.clear();
         totalAmount = 0.0;
         totalLabel.setText("Total: $0.00");

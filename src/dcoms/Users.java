@@ -26,7 +26,7 @@ public class Users extends UnicastRemoteObject implements UserService {
     
     public String authenticateUser(String username, String password)throws RemoteException {
         String userType = null;
-        String query = "SELECT userType FROM Users WHERE username = ? AND password = ?";
+        String query = "SELECT userID, userType FROM Users WHERE username = ? AND password = ?";
 
         try (Connection conn = DriverManager.getConnection(url, dbUser, dbPass);
             PreparedStatement pst = conn.prepareStatement(query)) {
@@ -36,6 +36,7 @@ public class Users extends UnicastRemoteObject implements UserService {
             ResultSet rs = pst.executeQuery();
 
             if (rs.next()) { // If a row is found, get usertype
+                Session.getInstance().setUserID(rs.getInt("userID")); // store the logged-in user ID
                 userType = rs.getString("userType");
             }
 
@@ -136,20 +137,4 @@ public class Users extends UnicastRemoteObject implements UserService {
         }
         return false;
     }
-
-    
-
-
-//    public String getCurrentDateTime(){
-//        // Get the current date and time
-//        LocalDateTime currentDateTime = LocalDateTime.now();
-//
-//        // Define a custom format
-//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-//
-//        // Format the LocalDateTime object
-//        String formattedDateTime = currentDateTime.format(formatter);
-//        
-//        return formattedDateTime;
-//    }
 }
