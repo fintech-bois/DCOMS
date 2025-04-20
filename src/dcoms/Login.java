@@ -33,6 +33,7 @@ public class Login extends javax.swing.JFrame {
         File file = new File("Remember Me.ser");
         if (file.exists()) {
             deserial();
+            chkRememberMe.setSelected(true);
         }
     }
     private void deserial() {
@@ -178,9 +179,6 @@ public class Login extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoginActionPerformed
-  // Clear previous error messages
-
-
         UsernameError.setText("");
         PasswordError.setText("");
 
@@ -224,13 +222,7 @@ public class Login extends javax.swing.JFrame {
                     File file = new File(filename);
 
                     if (file.exists()) {  // Check if file exists
-                        if (file.delete()) {  // Delete the file
-                            System.out.println(filename + " deleted successfully.");
-                        } else {
-                            System.out.println("Failed to delete " + filename);
-                        }
-                    } else {
-                        System.out.println(filename + " does not exist.");
+                        file.delete();
                     }
                 }
                 JOptionPane.showMessageDialog(null, "Login successful.", "Success", JOptionPane.INFORMATION_MESSAGE);
