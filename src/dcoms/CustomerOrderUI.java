@@ -23,10 +23,20 @@ public class CustomerOrderUI extends JFrame {
     private double totalAmount = 0.0;
     private Map<Integer, Integer> orderItems = new HashMap<>(); 
     
-    public CustomerOrderUI() {
+    private String username;
+    private String userType;
+    
+    public CustomerOrderUI(String username, String userType) {
+        this.username = username;
+        this.userType = userType;
+        
         setupRMIConnection();
         initializeUI();
         loadMenuItems();
+    }
+
+    private CustomerOrderUI() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
     private void setupRMIConnection() {
@@ -109,8 +119,9 @@ public class CustomerOrderUI extends JFrame {
     }
     
     private void goToHomePage() {
-        JOptionPane.showMessageDialog(this, "Returning to Home Page...", "Navigation", JOptionPane.INFORMATION_MESSAGE);
         // Add actual home page navigation logic here
+        this.setVisible(false);
+        new CustomerHome(username, userType).setVisible(true);
     }
     
     private void loadMenuItems() {
@@ -399,9 +410,15 @@ public class CustomerOrderUI extends JFrame {
             return;
         }
         
-        JOptionPane.showMessageDialog(this, "Order placed successfully!\nTotal: $" + String.format("%.2f", totalAmount), 
-                "Order Confirmation", JOptionPane.INFORMATION_MESSAGE);
-        
+         int result = JOptionPane.showConfirmDialog(this, 
+         "Order placed successfully!\nTotal: $" + String.format("%.2f", totalAmount) + "\n\nView Receipt?", 
+         "Order Confirmation", 
+         JOptionPane.YES_NO_OPTION);
+
+        if (result == JOptionPane.YES_OPTION) {
+         // Open receipt window
+        new ReceiptUI(orderItems, totalAmount, itemService).setVisible(true);
+    }
         orderItems.clear();
         totalAmount = 0.0;
         totalLabel.setText("Total: $0.00");
@@ -422,3 +439,6 @@ public class CustomerOrderUI extends JFrame {
         });
     }
 }
+
+
+
