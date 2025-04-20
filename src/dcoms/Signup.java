@@ -140,19 +140,19 @@ public class Signup extends javax.swing.JFrame {
                             .addComponent(LnameError)
                             .addComponent(ICError)))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(131, 131, 131)
-                        .addComponent(btnSignup, javax.swing.GroupLayout.PREFERRED_SIZE, 237, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
                         .addGap(207, 207, 207)
-                        .addComponent(jLabel9)))
-                .addContainerGap(151, Short.MAX_VALUE))
+                        .addComponent(jLabel9))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(155, 155, 155)
+                        .addComponent(btnSignup, javax.swing.GroupLayout.PREFERRED_SIZE, 182, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(182, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(20, 20, 20)
                 .addComponent(jLabel9)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 33, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 24, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtUsername, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel1)
@@ -192,7 +192,7 @@ public class Signup extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnSignupActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSignupActionPerformed
-    try {
+   try {
         String username, password, confirmPassword, fname, lname, ic;
         username = txtUsername.getText();
         password = String.valueOf(txtPassword.getPassword());
@@ -225,8 +225,6 @@ public class Signup extends javax.swing.JFrame {
             PasswordError.setText("At least 8 characters!");
             PasswordError.setVisible(true);
             isValid = false;
-        } else {
-            PasswordError.setVisible(false); 
         }
         if (!password.equals(confirmPassword)) {
             ConfirmPasswordError.setText("Passwords do not match!");
@@ -248,23 +246,29 @@ public class Signup extends javax.swing.JFrame {
             ICError.setVisible(true);
             isValid = false;
         } else {
-        // Check if the IC matches the pattern: xxxxxx-xx-xxxx
-        String regex = "\\d{6}-\\d{2}-\\d{4}"; // The pattern for the IC format
-        Pattern pattern = Pattern.compile(regex);
-        Matcher matcher = pattern.matcher(ic);
-
-        if (!matcher.matches()) {
-            ICError.setText("Invalid IC format!");
-            ICError.setVisible(true);
-            isValid = false;
-        } else {
-        ICError.setVisible(false); // Hide the error if the format is correct
+            String regex = "\\d{6}-\\d{2}-\\d{4}";
+            Pattern pattern = Pattern.compile(regex);
+            Matcher matcher = pattern.matcher(ic);
+            if (!matcher.matches()) {
+                ICError.setText("Invalid IC format!");
+                ICError.setVisible(true);
+                isValid = false;
+            }
         }
-    }
+
+        // Proceed if everything is valid
         if (isValid) {
-            // Proceed with signup if valid
-            UserService obj1 = (UserService)Naming.lookup("rmi://localhost:1099/Users");
-            String status = obj1.signup(username, password, fname, lname, ic);
+            UserService obj1 = (UserService) Naming.lookup("rmi://localhost:1099/Users");
+
+            // Check if username exists BEFORE trying to sign up
+            if (obj1.usernameExists(username)) {
+                UsernameError.setText("Username already exists!");
+                UsernameError.setVisible(true);
+                return; // Exit early to prevent signup
+            }
+
+            // Proceed with signup
+            String status = obj1.signup(username, password, fname, lname, ic, "customer");
             if (status.equals("Successful")) {
                 JOptionPane.showMessageDialog(null, "Sign up successful.", "Success", JOptionPane.INFORMATION_MESSAGE);
                 Login a = new Login();
@@ -276,7 +280,7 @@ public class Signup extends javax.swing.JFrame {
         }
     } catch (NotBoundException | MalformedURLException | RemoteException ex) {
         Logger.getLogger(Signup.class.getName()).log(Level.SEVERE, null, ex);
-            }
+    }
 
     }//GEN-LAST:event_btnSignupActionPerformed
 

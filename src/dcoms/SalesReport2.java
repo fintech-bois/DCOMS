@@ -21,12 +21,17 @@ public class SalesReport2 extends JFrame {
     private JTextField summaryField;
     java.util.List<Sale> salesList = new ArrayList<>();
     Date fromDate = null, toDate = null;
+    
+    private String username;
+    private String userType;
 
-    public SalesReport2() {
+    public SalesReport2(String username, String userType) {
+        this.username = username;
+        this.userType = userType;
         initializeUI();
         getReportDetails();
         displayReport();
-    }
+    }    
 
     private void initializeUI(){
         setTitle("Sales Report");
@@ -112,7 +117,7 @@ public class SalesReport2 extends JFrame {
 
         backBtn.addActionListener(e -> {
             dispose();
-            new AdminHome().setVisible(true);
+            new AdminHome(username, userType).setVisible(true);
         });
 
         setVisible(true);
@@ -147,7 +152,7 @@ public class SalesReport2 extends JFrame {
         summaryField.setText(String.format("%.2f", totalSales));
     }
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(SalesReport2::new);
-    }
+//    public static void main(String[] args) {
+//        SwingUtilities.invokeLater(SalesReport2::new);
+//    }
 }
