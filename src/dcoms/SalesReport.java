@@ -14,6 +14,12 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.*;
+import java.awt.event.*;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import com.toedter.calendar.JDateChooser;
 
 /**
  *
@@ -23,6 +29,8 @@ public class SalesReport extends javax.swing.JFrame {
 
     DefaultTableModel model;
     List<Sale> salesList = new ArrayList<>();
+    private JDateChooser dateChooser;
+    private JButton filterButton;
     /**
      * Creates new form SalesReport
      */
@@ -105,7 +113,7 @@ public class SalesReport extends javax.swing.JFrame {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap(56, Short.MAX_VALUE)
+                .addContainerGap(89, Short.MAX_VALUE)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 242, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(30, 30, 30)
                 .addComponent(txtTotalSales, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
