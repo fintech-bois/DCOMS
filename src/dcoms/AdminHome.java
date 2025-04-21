@@ -124,7 +124,7 @@ public class AdminHome extends javax.swing.JFrame {
 
     private void createAdminActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_createAdminActionPerformed
         // TODO add your handling code here:
-        AdminSginup signup = new AdminSginup(username, userType);
+        AdminSignup signup = new AdminSignup(username, userType);
         signup.setVisible(true);
         this.setVisible(false);
     }//GEN-LAST:event_createAdminActionPerformed
