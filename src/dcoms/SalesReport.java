@@ -78,6 +78,7 @@ public class SalesReport extends javax.swing.JFrame {
         table = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setResizable(false);
 
         txtTotalSales.setEditable(false);
 
