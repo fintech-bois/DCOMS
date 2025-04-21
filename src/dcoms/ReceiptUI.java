@@ -25,8 +25,9 @@ public class ReceiptUI extends JFrame {
         this.orderItems = orderItems;
         this.totalAmount = totalAmount;
         this.itemService = itemService;
-
+        
         initializeUI();
+        setResizable(false);
     }
 
     private void initializeUI() {
