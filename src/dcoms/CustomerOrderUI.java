@@ -413,7 +413,7 @@ public class CustomerOrderUI extends JFrame {
         }
         
         try {
-            itemService.insertOrders(orderItems, totalAmount);
+            itemService.placeOrder(orderItems, totalAmount, username);
         } catch (RemoteException ex) {
             Logger.getLogger(CustomerOrderUI.class.getName()).log(Level.SEVERE, null, ex);
         }
