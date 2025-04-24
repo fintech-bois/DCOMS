@@ -5,13 +5,8 @@
  */
 package dcoms;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import javax.swing.JOptionPane;
 import java.rmi.Naming;
-import java.sql.SQLException;
 
 /**
  *
@@ -22,9 +17,6 @@ public class ProfileEdit extends javax.swing.JFrame {
     /**
      * Creates new form ProfileEdit
      */
-
-    String url = "jdbc:derby://localhost:1527/FBOSdb", dbUser = "test", dbPass = "test";
-
     private String username;
     private String userType;
 
@@ -39,24 +31,24 @@ public class ProfileEdit extends javax.swing.JFrame {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    private void fetchUserDetails() {
-        try (Connection conn = DriverManager.getConnection(url, dbUser, dbPass)) {
-            String query = "SELECT * FROM Users WHERE username = ?";
-            PreparedStatement pst = conn.prepareStatement(query);
-            pst.setString(1, username);
-            ResultSet rs = pst.executeQuery();
-
-            if (rs.next()) {
-                txtPassword.setText(rs.getString("password"));
-                txtFname.setText(rs.getString("fname"));
-                txtLname.setText(rs.getString("lname"));
-                txtIC.setText(rs.getString("ic"));
-            }
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Failed to load profile.");
+   private void fetchUserDetails() {
+    try {
+        UserService userService = (UserService) Naming.lookup("rmi://localhost:1099/Users");
+        String[] details = userService.getUserDetails(username);
+        if (details != null && details.length > 0) {
+            txtPassword.setText("");  
+            txtFname.setText(details[2]);     
+            txtLname.setText(details[3]);     
+            txtIC.setText(details[4]);        
+        } else {
+            JOptionPane.showMessageDialog(this, "User details not found.");
         }
+
+    } catch (Exception e) {
+        e.printStackTrace();
+        JOptionPane.showMessageDialog(this, "Failed to load profile.");
     }
+}
    
     /**
      * This method is called from within the constructor to initialize the form.
@@ -227,7 +219,7 @@ public class ProfileEdit extends javax.swing.JFrame {
     }//GEN-LAST:event_txtICActionPerformed
 
     private void SaveProfileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SaveProfileActionPerformed
-                                           
+    
         PasswordError.setText("");
         ConfirmPasswordError.setText("");
         FnameError.setText("");
@@ -244,6 +236,9 @@ public class ProfileEdit extends javax.swing.JFrame {
 
         if (password.isEmpty()) {
             PasswordError.setText("Password required!");
+            valid = false;
+        } else if (password.length() < 8) {
+            PasswordError.setText("At least 8 characters!");
             valid = false;
         }
         if (!password.equals(confirm)) {
@@ -262,23 +257,21 @@ public class ProfileEdit extends javax.swing.JFrame {
             ICError.setText("Invalid IC format!");
             valid = false;
         }
-
         if (!valid) return;
 
         try {
-        UserService userService = (UserService) Naming.lookup("rmi://localhost:1099/Users");
-        String result = userService.updateProfile(username, password, fname, lname, ic);
+            UserService userService = (UserService) Naming.lookup("rmi://localhost:1099/Users");
+            String result = userService.updateProfile(username, password, fname, lname, ic);
 
-        if (result.trim().equalsIgnoreCase("Success")) {
-            JOptionPane.showMessageDialog(this, "Profile updated successfully!");
-        } else {
-            JOptionPane.showMessageDialog(this, result); // Show only the actual error message
-        }
+            if (result.trim().equalsIgnoreCase("Success")) {
+                JOptionPane.showMessageDialog(this, "Profile updated successfully!");
+            } else {
+                JOptionPane.showMessageDialog(this, result); // Show only the actual error message
+            }
         } catch (Exception ex) {
             ex.printStackTrace();
             JOptionPane.showMessageDialog(this, "An error occurred while updating profile.");
         }
-
     }//GEN-LAST:event_SaveProfileActionPerformed
 
     private void SaveProfile1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SaveProfile1ActionPerformed
@@ -291,7 +284,7 @@ public class ProfileEdit extends javax.swing.JFrame {
         AdminHome admin = new AdminHome(username, userType);
         admin.setVisible(true);
         } else if (userType.equals("customer")) {
-            CustomerHome customer = new CustomerHome(username, userType);
+            CustomerHome2 customer = new CustomerHome2(username, userType);
             customer.setVisible(true);
         }
         this.dispose(); 
