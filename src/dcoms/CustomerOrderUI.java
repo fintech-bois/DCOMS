@@ -123,7 +123,7 @@ public class CustomerOrderUI extends JFrame {
     private void goToHomePage() {
         // Add actual home page navigation logic here
         this.setVisible(false);
-        new CustomerHome(username, userType).setVisible(true);
+        new CustomerHome2(username, userType).setVisible(true);
     }
     
     private void loadMenuItems() {

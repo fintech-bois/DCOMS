@@ -230,7 +230,7 @@ public class Login extends javax.swing.JFrame {
                     AdminHome a = new AdminHome(username, userType); 
                     a.setVisible(true);
                 } else if (userType.equals("customer")) {
-                    CustomerHome a = new CustomerHome(username, userType);
+                    CustomerHome2 a = new CustomerHome2(username, userType);
                     a.setVisible(true);
                 }
                 this.setVisible(false);
