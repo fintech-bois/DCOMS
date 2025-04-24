@@ -7,6 +7,5 @@ import java.util.Map;
 public interface ItemService extends Remote {
     public List<Item> getAllItems() throws RemoteException;
     public Item getItemById(int itemId) throws RemoteException;
-    public void insertOrders(Map<Integer, Integer> orderItems, double totalAmount) throws RemoteException;
-    public void insertOrderItems() throws RemoteException;
+    public void placeOrder(Map<Integer, Integer> orderItems, double totalAmount, String username) throws RemoteException;
 }
