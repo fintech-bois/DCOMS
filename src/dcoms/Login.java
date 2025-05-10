@@ -19,6 +19,11 @@ import java.rmi.RemoteException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
+import javax.net.ssl.SSLSocket;
+import javax.net.ssl.SSLSocketFactory;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
 
 /**
  *
@@ -179,53 +184,84 @@ public class Login extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoginActionPerformed
-        UsernameError.setText("");
-        PasswordError.setText("");
+       UsernameError.setText("");
+    PasswordError.setText("");
 
-        String username = txtUsername.getText();
-        String password = String.valueOf(txtPassword.getPassword());
-        boolean isValid = true;
+    String username = txtUsername.getText();
+    String password = String.valueOf(txtPassword.getPassword());
+    boolean isValid = true;
 
-        // Validate username and password
-        if (username.isEmpty()) {
-            UsernameError.setText("Username required!");
-            UsernameError.setVisible(true);
-            isValid = false;
-        }
+    // Validate username and password
+    if (username.isEmpty()) {
+        UsernameError.setText("Username required!");
+        UsernameError.setVisible(true);
+        isValid = false;
+    }
 
-        if (password.isEmpty()) {
-            PasswordError.setText("Password required!");
-            PasswordError.setVisible(true);
-            isValid = false;
-        }
+    if (password.isEmpty()) {
+        PasswordError.setText("Password required!");
+        PasswordError.setVisible(true);
+        isValid = false;
+    }
 
-        if (!isValid) {
-            return; 
-        }
+    if (!isValid) {
+        return; 
+    }
 
-        try {
-            // Call the RMI service to authenticate the user
-            UserService obj1 = (UserService) Naming.lookup("rmi://localhost:1099/Users");
-            String userType = obj1.authenticateUser(username, password);
+    String host = "localhost";
+    int port = 8443;
+    
+    try {
+        // Set up SSL connection using the same truststore as your CLI client
+        System.setProperty("javax.net.ssl.trustStore", "C:\\Program Files\\Java\\jdk1.8.0_111\\bin\\serverkeystore.jks");
+        System.setProperty("javax.net.ssl.trustStorePassword", "password");
+        
+        // For debugging SSL issues
+        // System.setProperty("javax.net.debug", "ssl");
+        
+        SSLSocketFactory factory = (SSLSocketFactory) SSLSocketFactory.getDefault();
+        SSLSocket socket = (SSLSocket) factory.createSocket(host, port);
+        
+        try (
+            // Create readers and writers
+            BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            PrintWriter writer = new PrintWriter(socket.getOutputStream(), true)
+        ) {
+            // Send username and password to server
+            writer.println(username + ":" + password);
             
-            if (userType != null) {
-                // If username and password match
+            // Read server response
+            String response = reader.readLine();
+            System.out.println("Server response: " + response);
+            
+            if (response != null && response.contains("successful")) {
+                // Extract user type from response (Format: "Login successful. UserType: admin")
+                String userType = "customer"; // Default value
+                if (response.contains("UserType:")) {
+                    userType = response.substring(response.lastIndexOf(":") + 1).trim();
+                }
+                
+                // Handle "Remember Me" functionality
                 if (chkRememberMe.isSelected()) {
                     UsersDTO obj2 = new UsersDTO(username, password);
-                    FileOutputStream fout = new FileOutputStream("Remember Me.ser");
-                    ObjectOutputStream out = new ObjectOutputStream(fout);
-                    out.writeObject(obj2);
-                    out.flush();
-                    out.close();
+                    try (
+                        FileOutputStream fout = new FileOutputStream("Remember Me.ser");
+                        ObjectOutputStream out = new ObjectOutputStream(fout)
+                    ) {
+                        out.writeObject(obj2);
+                        out.flush();
+                    }
                 } else {
-                    String filename = "Remember Me.ser"; // Change this to your file name
+                    String filename = "Remember Me.ser";
                     File file = new File(filename);
-
-                    if (file.exists()) {  // Check if file exists
+                    if (file.exists()) {
                         file.delete();
                     }
                 }
+                
                 JOptionPane.showMessageDialog(null, "Login successful.", "Success", JOptionPane.INFORMATION_MESSAGE);
+                
+                // Launch appropriate home screen based on user type
                 if (userType.equals("admin")) {
                     AdminHome a = new AdminHome(username, userType); 
                     a.setVisible(true);
@@ -236,18 +272,17 @@ public class Login extends javax.swing.JFrame {
                 this.setVisible(false);
             } else {
                 // Username or password is incorrect
-                PasswordError.setText("Username and password does not match!");
+                PasswordError.setText("Invalid credentials or server error");
                 PasswordError.setVisible(true);
             }
-        } catch (NotBoundException ex) {
-            Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (MalformedURLException ex) {
-            Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (RemoteException ex) {
-            Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
-            Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
         }
+    } catch (Exception ex) {
+        Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
+        JOptionPane.showMessageDialog(null, 
+            "Connection error: " + ex.getMessage(), 
+            "Error", 
+            JOptionPane.ERROR_MESSAGE);
+    }
     }//GEN-LAST:event_btnLoginActionPerformed
 
     private void btnExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExitActionPerformed
