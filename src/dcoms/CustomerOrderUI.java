@@ -38,7 +38,7 @@ public class CustomerOrderUI extends JFrame {
     }
 
     private CustomerOrderUI() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException("Not supported yet.");
     }
     
     private void setupRMIConnection() {
@@ -59,7 +59,6 @@ public class CustomerOrderUI extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout(10, 10));
         
-        // Add header panel with Home button
         JPanel headerPanel = new JPanel();
         headerPanel.setLayout(new BorderLayout());
         headerPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
@@ -75,7 +74,6 @@ public class CustomerOrderUI extends JFrame {
         
         add(headerPanel, BorderLayout.NORTH);
         
-        // Menu Panel (Left side)
         menuPanel = new JPanel();
         menuPanel.setLayout(new BoxLayout(menuPanel, BoxLayout.Y_AXIS));
         menuPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
@@ -84,8 +82,7 @@ public class CustomerOrderUI extends JFrame {
             BorderFactory.createTitledBorder("Menu Items"),
             BorderFactory.createEmptyBorder(15, 15, 15, 15)
         ));
-        
-        // Cart Panel (Right side)
+
         cartPanel = new JPanel();
         cartPanel.setLayout(new BoxLayout(cartPanel, BoxLayout.Y_AXIS));
         cartPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
@@ -95,7 +92,6 @@ public class CustomerOrderUI extends JFrame {
             BorderFactory.createEmptyBorder(15, 15, 15, 15)
         ));
         
-        // Bottom panel with total and checkout button
         JPanel bottomPanel = new JPanel(new BorderLayout(20, 0));
         bottomPanel.setBorder(BorderFactory.createEmptyBorder(15, 20, 15, 20));
         bottomPanel.setBackground(new Color(245, 245, 245));
@@ -111,7 +107,6 @@ public class CustomerOrderUI extends JFrame {
         bottomPanel.add(totalLabel, BorderLayout.WEST);
         bottomPanel.add(checkoutBtn, BorderLayout.EAST);
         
-        // Split pane for menu and cart
         JSplitPane splitPane = new JSplitPane(
             JSplitPane.HORIZONTAL_SPLIT, menuScrollPane, cartScrollPane);
         splitPane.setDividerLocation(600);
@@ -121,7 +116,6 @@ public class CustomerOrderUI extends JFrame {
     }
     
     private void goToHomePage() {
-        // Add actual home page navigation logic here
         this.setVisible(false);
         new CustomerHome2(username, userType).setVisible(true);
     }
@@ -140,7 +134,6 @@ public class CustomerOrderUI extends JFrame {
     private void displayMenuItems() {
         menuPanel.removeAll();
         
-        // Group items by category
         Map<String, List<Item>> itemsByCategory = new HashMap<>();
         
         for (Item item : menuItems) {
@@ -151,13 +144,11 @@ public class CustomerOrderUI extends JFrame {
             itemsByCategory.get(category).add(item);
         }
         
-        // Create category panels
         for (String category : itemsByCategory.keySet()) {
             JPanel categoryPanel = new JPanel();
             categoryPanel.setLayout(new BorderLayout(0, 10));
             categoryPanel.setBorder(BorderFactory.createEmptyBorder(15, 5, 25, 5));
-            
-            // Category header with margins
+                       
             JPanel headerPanel = new JPanel(new BorderLayout());
             headerPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 10, 5));
             
@@ -167,7 +158,6 @@ public class CustomerOrderUI extends JFrame {
             
             categoryPanel.add(headerPanel, BorderLayout.NORTH);
             
-            // Items grid with spacing
             JPanel itemsGrid = new JPanel();
             itemsGrid.setLayout(new GridLayout(0, 3, 15, 15));
             
@@ -179,7 +169,6 @@ public class CustomerOrderUI extends JFrame {
             categoryPanel.add(itemsGrid, BorderLayout.CENTER);
             
             menuPanel.add(categoryPanel);
-            // Add separation between categories
             menuPanel.add(Box.createVerticalStrut(10));
         }
         
@@ -196,21 +185,16 @@ public class CustomerOrderUI extends JFrame {
         ));
         panel.setPreferredSize(new Dimension(180, 200));
         
-        // Image panel with padding
         JPanel imagePanel = new JPanel(new BorderLayout());
         imagePanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         
-        // Image label
         JLabel imageLabel = new JLabel();
         imageLabel.setHorizontalAlignment(JLabel.CENTER);
         
-        // Load image if available
         if (item.getImage() != null && !item.getImage().isEmpty()) {
             try {
-                // Use resource loading instead of direct file loading
-                ImageIcon icon = loadImageFromResource(item.getImage());
+                ImageIcon icon = loadImage(item.getImage());
                 if (icon != null) {
-                    // Resize image to fit panel
                     Image image = icon.getImage().getScaledInstance(100, 80, Image.SCALE_SMOOTH);
                     ImageIcon scaledIcon = new ImageIcon(image);
                     imageLabel.setIcon(scaledIcon);
@@ -227,7 +211,6 @@ public class CustomerOrderUI extends JFrame {
         
         imagePanel.add(imageLabel, BorderLayout.CENTER);
         
-        // Item information
         JPanel infoPanel = new JPanel();
         infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.Y_AXIS));
         infoPanel.setBorder(BorderFactory.createEmptyBorder(5, 0, 5, 0));
@@ -244,7 +227,6 @@ public class CustomerOrderUI extends JFrame {
         infoPanel.add(Box.createVerticalStrut(5));
         infoPanel.add(priceLabel);
         
-        // Button panel
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         JButton addButton = new JButton("Add to Cart");
         addButton.addActionListener(e -> addToCart(item));
@@ -257,33 +239,24 @@ public class CustomerOrderUI extends JFrame {
         return panel;
     }
     
-    private ImageIcon loadImageFromResource(String imageName) {
-//        String[] possiblePaths = {
-//            "/images/" + imageName,
-//            imageName
-//        };
-//        
-//        // First try to load using resource
-//        for (String path : possiblePaths) {
-//            URL imageUrl = getClass().getResource(path);
-//            if (imageUrl != null) {
-//                return new ImageIcon(imageUrl);
-//            }
-//        }
-              
-        // try loading from the project's root directory
-        String projectRoot = System.getProperty("user.dir");
-        File file = new File(projectRoot + "/src/images/" + imageName);
-        if (file.exists() && file.isFile()) {
-            return new ImageIcon(file.getAbsolutePath());
+    private ImageIcon loadImage(String imgPath) {
+        if (imgPath == null || imgPath.isEmpty()) return null;
+
+        File f = new File(imgPath);
+        if (f.exists() && f.isFile()) {
+            return new ImageIcon(f.getAbsolutePath());
         }
-        
-        System.out.println("Failed to load image: " + imageName);
+
+        URL url = getClass().getResource(imgPath.startsWith("/") ? imgPath : "/" + imgPath);
+        if (url != null) return new ImageIcon(url);
+
+        url = getClass().getResource("/images/" + imgPath);
+        if (url != null) return new ImageIcon(url);
+
+        System.out.println("Image not found: " + imgPath);
         return null;
     }
-    
     private void addToCart(Item item) {
-        // Update order quantity
         int itemId = item.getItemId();
         int currentQty = orderItems.getOrDefault(itemId, 0);
         orderItems.put(itemId, currentQty + 1);
@@ -304,7 +277,6 @@ public class CustomerOrderUI extends JFrame {
         try {
             Item item = itemService.getItemById(itemId);
             if (item != null) {
-                // Create a panel with GridBagLayout for precise control
                 JPanel itemPanel = new JPanel(new GridBagLayout());
                 itemPanel.setBorder(BorderFactory.createCompoundBorder(
                     BorderFactory.createMatteBorder(0, 0, 1, 0, Color.LIGHT_GRAY),
@@ -315,11 +287,10 @@ public class CustomerOrderUI extends JFrame {
                 gbc.fill = GridBagConstraints.VERTICAL;
                 gbc.insets = new Insets(0, 5, 0, 5);
                 
-                // 1. Image on the left
                 JLabel thumbLabel = new JLabel();
                 if (item.getImage() != null && !item.getImage().isEmpty()) {
                     try {
-                        ImageIcon icon = loadImageFromResource(item.getImage());
+                        ImageIcon icon = loadImage(item.getImage());
                         if (icon != null) {
                             Image image = icon.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
                             ImageIcon scaledIcon = new ImageIcon(image);
@@ -334,15 +305,13 @@ public class CustomerOrderUI extends JFrame {
                 gbc.weightx = 0.1;
                 itemPanel.add(thumbLabel, gbc);
                 
-                // 2. Item name in the middle
                 JLabel nameLabel = new JLabel(item.getItemName());
                 nameLabel.setFont(new Font("Arial", Font.BOLD, 12));
                 gbc.gridx = 1;
-                gbc.weightx = 0.4; // Give more space to name
+                gbc.weightx = 0.4;
                 gbc.anchor = GridBagConstraints.WEST;
                 itemPanel.add(nameLabel, gbc);
                 
-                // 3. Price calculation
                 double itemTotal = item.getPrice() * quantity;
                 JLabel priceLabel = new JLabel(quantity + "x $" + String.format("%.2f", item.getPrice()) + 
                         " = $" + String.format("%.2f", itemTotal));
@@ -375,14 +344,13 @@ public class CustomerOrderUI extends JFrame {
                 itemPanel.add(quantityPanel, gbc);
                 
                 cartPanel.add(itemPanel);
-                cartPanel.add(Box.createVerticalStrut(2)); // Add a small gap between items
+                cartPanel.add(Box.createVerticalStrut(2)); 
             }
         } catch (RemoteException e) {
             e.printStackTrace();
         }
     }
     
-        // Add empty space at the bottom
         cartPanel.add(Box.createVerticalGlue());
 
         cartPanel.revalidate();
@@ -424,7 +392,6 @@ public class CustomerOrderUI extends JFrame {
         JOptionPane.YES_NO_OPTION);
 
         if (result == JOptionPane.YES_OPTION) {
-            // Open receipt window
             new ReceiptUI(orderItems, totalAmount, itemService).setVisible(true);
         }
         orderItems.clear();
@@ -435,7 +402,6 @@ public class CustomerOrderUI extends JFrame {
     
     public static void main(String[] args) {
         try {
-            // Set system look and feel for better appearance
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (Exception e) {
             e.printStackTrace();
