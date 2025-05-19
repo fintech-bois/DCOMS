@@ -38,6 +38,7 @@ public class AdminHome extends javax.swing.JFrame {
         editProfile = new javax.swing.JButton();
         createAdmin = new javax.swing.JButton();
         logout = new javax.swing.JButton();
+        inventory = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
@@ -72,6 +73,13 @@ public class AdminHome extends javax.swing.JFrame {
             }
         });
 
+        inventory.setText("CRUD inventory");
+        inventory.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                inventoryActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -87,7 +95,8 @@ public class AdminHome extends javax.swing.JFrame {
                             .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(editProfile, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(createAdmin, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(logout, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                            .addComponent(logout, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(inventory, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 .addContainerGap(158, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -95,7 +104,9 @@ public class AdminHome extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGap(71, 71, 71)
                 .addComponent(jLabel1)
-                .addGap(67, 67, 67)
+                .addGap(26, 26, 26)
+                .addComponent(inventory)
+                .addGap(18, 18, 18)
                 .addComponent(jButton1)
                 .addGap(18, 18, 18)
                 .addComponent(editProfile)
@@ -137,6 +148,13 @@ public class AdminHome extends javax.swing.JFrame {
         this.setVisible(false);
     }//GEN-LAST:event_logoutActionPerformed
 
+    private void inventoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_inventoryActionPerformed
+        // TODO add your handling code here:
+        AdminUI adminUI = new AdminUI(username, userType);
+    adminUI.setVisible(true);
+    this.setVisible(false);
+    }//GEN-LAST:event_inventoryActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -175,6 +193,7 @@ public class AdminHome extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton createAdmin;
     private javax.swing.JButton editProfile;
+    private javax.swing.JButton inventory;
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JButton logout;

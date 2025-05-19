@@ -24,6 +24,53 @@ public class ItemImpl extends UnicastRemoteObject implements ItemService {
         super();
     }
     
+        @Override
+    public void addItem(Item item) throws RemoteException {
+        String query = "INSERT INTO Items (itemName, category, price, image) VALUES (?, ?, ?, ?)";
+        try (Connection conn = DriverManager.getConnection(url, dbUser, dbPass);
+             PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setString(1, item.getItemName());
+            ps.setString(2, item.getCategory());
+            ps.setDouble(3, item.getPrice());
+            ps.setString(4, item.getImage());
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new RemoteException("Error adding item", e);
+        }
+    }
+
+    @Override
+    public void updateItem(Item item) throws RemoteException {
+        String query = "UPDATE Items SET itemName=?, category=?, price=?, image=? WHERE itemID=?";
+        try (Connection conn = DriverManager.getConnection(url, dbUser, dbPass);
+             PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setString(1, item.getItemName());
+            ps.setString(2, item.getCategory());
+            ps.setDouble(3, item.getPrice());
+            ps.setString(4, item.getImage());
+            ps.setInt(5, item.getItemId());
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new RemoteException("Error updating item", e);
+        }
+    }
+
+    @Override
+    public void deleteItem(int itemId) throws RemoteException {
+        String query = "DELETE FROM Items WHERE itemID=?";
+        try (Connection conn = DriverManager.getConnection(url, dbUser, dbPass);
+             PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setInt(1, itemId);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new RemoteException("Error deleting item", e);
+        }
+    }
+
+    
     @Override
     public List<Item> getAllItems() throws RemoteException {
         List<Item> itemsList = new ArrayList<>();
