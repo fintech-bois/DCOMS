@@ -263,7 +263,7 @@ public class Login extends javax.swing.JFrame {
                 
                 // Launch appropriate home screen based on user type
                 if (userType.equals("admin")) {
-                    AdminHome a = new AdminHome(username, userType); 
+                    AdminHomePage a = new AdminHomePage(username, userType); 
                     a.setVisible(true);
                 } else if (userType.equals("customer")) {
                     CustomerHome2 a = new CustomerHome2(username, userType);
