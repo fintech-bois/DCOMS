@@ -325,7 +325,7 @@ public class AdminSignup extends javax.swing.JFrame {
 
     private void backActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backActionPerformed
         // TODO add your handling code here:
-        AdminHome a = new AdminHome(username, userType);
+        AdminHomePage a = new AdminHomePage(username, userType);
         a.setVisible(true);
         this.setVisible(false);
     }//GEN-LAST:event_backActionPerformed

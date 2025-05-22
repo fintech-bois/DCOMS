@@ -61,7 +61,7 @@ public class AdminUI extends JFrame {
         deleteBtn.addActionListener(e -> deleteSelectedItem());
         backBtn.addActionListener(e -> {
             dispose();
-            new AdminHome(username, userType).setVisible(true);
+            new AdminHomePage(username, userType).setVisible(true);
         });
 
         btnPanel.add(addBtn);

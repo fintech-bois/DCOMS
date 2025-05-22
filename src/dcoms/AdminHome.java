@@ -151,8 +151,8 @@ public class AdminHome extends javax.swing.JFrame {
     private void inventoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_inventoryActionPerformed
         // TODO add your handling code here:
         AdminUI adminUI = new AdminUI(username, userType);
-    adminUI.setVisible(true);
-    this.setVisible(false);
+        adminUI.setVisible(true);
+        this.setVisible(false);
     }//GEN-LAST:event_inventoryActionPerformed
 
     /**

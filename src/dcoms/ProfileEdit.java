@@ -281,7 +281,7 @@ public class ProfileEdit extends javax.swing.JFrame {
     private void backbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backbtnActionPerformed
         // TODO add your handling code here:
         if (userType.equals("admin")) {
-        AdminHome admin = new AdminHome(username, userType);
+        AdminHomePage admin = new AdminHomePage(username, userType);
         admin.setVisible(true);
         } else if (userType.equals("customer")) {
             CustomerHome2 customer = new CustomerHome2(username, userType);

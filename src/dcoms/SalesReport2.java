@@ -117,7 +117,7 @@ public class SalesReport2 extends JFrame {
 
         backBtn.addActionListener(e -> {
             dispose();
-            new AdminHome(username, userType).setVisible(true);
+            new AdminHomePage(username, userType).setVisible(true);
         });
 
         setVisible(true);
