@@ -64,7 +64,7 @@ public class AdminHomePage extends JFrame {
         btnEdit.addActionListener(e -> editProfileActionPerformed());
         btnCreateAdmin.addActionListener(e -> createAdminActionPerformed());
 
-        //buttonPanel.add(btnInventory);
+        buttonPanel.add(btnInventory);
         buttonPanel.add(btnSales);
         buttonPanel.add(btnEdit);
         buttonPanel.add(btnCreateAdmin);
